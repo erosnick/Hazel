@@ -1,3 +1,5 @@
+.vs/
+
 # Prerequisites
 *.d
 
@@ -12,9 +14,8 @@
 *.ipdb
 *.ilk
 *.db
-*.opendb
-*.VC.db-shm
-*.VC.db-wal
+*.exp
+
 # Precompiled Headers
 *.gch
 *.pch
@@ -42,4 +43,3 @@
 *.exe
 *.out
 *.app
- 
