@@ -4,6 +4,11 @@ extern Hazel::Application* Hazel::CreateApplication();
 
 int main(int argc, char* argv[])
 {
+	Hazel::Log::Init();
+
+	HAZEL_CORE_WARN("Initialized Log!");
+	HAZEL_CLIENT_INFO("Hello");
+
 	auto app = Hazel::CreateApplication();
 
 	app->Run();
