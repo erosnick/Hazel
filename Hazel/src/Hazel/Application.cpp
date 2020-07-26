@@ -3,6 +3,8 @@
 * PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 */
 #include "Application.h"
+#include "Events/ApplicationEvent.h"
+#include "Log.h"
 
 namespace Hazel
 {
@@ -16,6 +18,8 @@ namespace Hazel
 
 	void Application::Run()
 	{
+		WindowResizeEvent windowResizeEvent(1280, 720);
 
+		HAZEL_TRACE(windowResizeEvent);
 	}
 }

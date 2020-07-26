@@ -4,6 +4,7 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/basic_file_sink.h>
+#include <iostream>
 
 namespace Hazel
 {
@@ -18,8 +19,38 @@ namespace Hazel
 
 		static void Init();
 
-		inline static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return coreLogger; }
-		inline static std::shared_ptr<spdlog::logger>& GetClientLogger() { return clientLogger; }
+		template<typename FormatString, typename... Args>
+		inline static void coreTrace(const FormatString& fmt, const Args&... args)
+		{
+			coreLogger->trace(fmt, args...);
+		}
+
+		template<typename FormatString, typename... Args>
+		inline static void coreInfo(const FormatString& fmt, const Args&... args)
+		{
+			coreLogger->info(fmt, args...);
+		}
+
+		template<typename FormatString, typename... Args>
+		inline static void coreWarn(const FormatString& fmt, const Args&... args)
+		{
+			coreLogger->warn(fmt, args...);
+		}
+
+		template<typename FormatString, typename... Args>
+		inline static void coreError(const FormatString& fmt, const Args&... args)
+		{
+			coreLogger->error(fmt, args...);
+		}
+
+		template<typename FormatString, typename... Args>
+		inline static void coreCritical(const FormatString& fmt, const Args&... args)
+		{
+			coreLogger->critical(fmt, args...);
+		}
+
+		inline static auto& GetCoreLogger() { return coreLogger; }
+		inline static auto& GetClientLogger() { return clientLogger; }
 
 	private:
 
@@ -29,11 +60,12 @@ namespace Hazel
 }
 
 // Core log macros
-#define HAZEL_CORE_TRACE(...)		::Hazel::Log::GetCoreLogger()->trace(__VA_ARGS__);
-#define HAZEL_CORE_INFO(...)		::Hazel::Log::GetCoreLogger()->info(__VA_ARGS__);
-#define HAZEL_CORE_WARN(...)		::Hazel::Log::GetCoreLogger()->warn(__VA_ARGS__);
-#define HAZEL_CORE_ERROR(...)		::Hazel::Log::GetCoreLogger()->error(__VA_ARGS__);
-#define HAZEL_CORE_CRITICAL(...)	::Hazel::Log::GetCoreLogger()->critical(__VA_ARGS__);
+#define HAZEL_TRACE(event) std::cout << event << std::endl;
+#define HAZEL_CORE_TRACE(...)		::Hazel::Log::coreTrace(__VA_ARGS__);
+#define HAZEL_CORE_INFO(...)		::Hazel::Log::coreInfo(__VA_ARGS__);
+#define HAZEL_CORE_WARN(...)		::Hazel::Log::coreWarn(__VA_ARGS__);
+#define HAZEL_CORE_ERROR(...)		::Hazel::Log::coreError(__VA_ARGS__);
+#define HAZEL_CORE_CRITICAL(...)	::Hazel::Log::coreCritical(__VA_ARGS__);
 
 // Client log macros
 #define HAZEL_CLIENT_TRACE(...)		::Hazel::Log::GetClientLogger()->trace(__VA_ARGS__);
