@@ -4,7 +4,6 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/basic_file_sink.h>
-#include <iostream>
 
 namespace Hazel
 {
@@ -60,7 +59,6 @@ namespace Hazel
 }
 
 // Core log macros
-#define HAZEL_TRACE(event) std::cout << event << std::endl;
 #define HAZEL_CORE_TRACE(...)		::Hazel::Log::coreTrace(__VA_ARGS__);
 #define HAZEL_CORE_INFO(...)		::Hazel::Log::coreInfo(__VA_ARGS__);
 #define HAZEL_CORE_WARN(...)		::Hazel::Log::coreWarn(__VA_ARGS__);
@@ -68,8 +66,8 @@ namespace Hazel
 #define HAZEL_CORE_CRITICAL(...)	::Hazel::Log::coreCritical(__VA_ARGS__);
 
 // Client log macros
-#define HAZEL_CLIENT_TRACE(...)		::Hazel::Log::GetClientLogger()->trace(__VA_ARGS__);
-#define HAZEL_CLIENT_INFO(...)		::Hazel::Log::GetClientLogger()->info(__VA_ARGS__);
-#define HAZEL_CLIENT_WARN(...)		::Hazel::Log::GetClientLogger()->warn(__VA_ARGS__);
-#define HAZEL_CLIENT_ERROR(...)		::Hazel::Log::GetClientLogger()->error(__VA_ARGS__);
-#define HAZEL_CLIENT_CRITICAL(...)	::Hazel::Log::GetClientLogger()->critical(__VA_ARGS__);
+#define HAZEL_TRACE(...)		::Hazel::Log::GetClientLogger()->trace(__VA_ARGS__);
+#define HAZEL_INFO(...)		::Hazel::Log::GetClientLogger()->info(__VA_ARGS__);
+#define HAZEL_WARN(...)		::Hazel::Log::GetClientLogger()->warn(__VA_ARGS__);
+#define HAZEL_ERROR(...)		::Hazel::Log::GetClientLogger()->error(__VA_ARGS__);
+#define HAZEL_CRITICAL(...)	::Hazel::Log::GetClientLogger()->critical(__VA_ARGS__);

@@ -10,6 +10,12 @@ workspace "Hazel"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+-- Include directories relative to root folder (solution directory)
+IncludeDir = {}
+IncludeDir["GLFW"] = "modules/GLFW/include"
+
+include "modules/GLFW"
+
 project "Hazel"
         location "Hazel"
         kind "SharedLib"
@@ -28,8 +34,21 @@ project "Hazel"
         includedirs
         {
             "modules/spdlog/include",
-            "Hazel/src"
+            "Hazel/src",
+            "%{IncludeDir.GLFW}"
         }
+
+        links
+        {
+            "GLFW",
+            "opengl32.lib"
+        }
+
+        disablewarnings { "4251" }
+        disablewarnings { "4566" }
+
+        pchheader "HazelPCH.h"
+        pchsource "%{prj.name}/src/HazelPCH.cpp"
 
         filter "system:windows"
             cppdialect "C++17"
@@ -38,7 +57,8 @@ project "Hazel"
 
             defines
             {
-                "HAZEL_EXPORTS"
+                "HAZEL_EXPORTS",
+                "HAZEL_WINDOWS_PLATFORM"
             }
 
             postbuildcommands
@@ -47,7 +67,7 @@ project "Hazel"
             }
 
         filter "configurations:Debug"
-            defines "HAZLE_DEBUG"
+            defines "HAZLE_DEBUG;HAZEL_ENABLE_ASSERTS"
             symbols "On"
 
         filter "configurations:Release"
@@ -84,6 +104,9 @@ project "Sandbox"
             "Hazel"
         }
 
+        disablewarnings { "4251" }
+        disablewarnings { "4566" }
+
         filter "system:windows"
         cppdialect "C++17"
         staticruntime "Off"
@@ -91,7 +114,7 @@ project "Sandbox"
 
         defines
         {
-            
+            "HAZEL_WINDOWS_PLATFORM"
         }
 
         filter "configurations:Debug"
