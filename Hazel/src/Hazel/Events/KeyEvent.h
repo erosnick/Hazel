@@ -36,6 +36,7 @@ namespace Hazel
 		{
 			std::stringstream stringStream;
 			stringStream << "KeyPressedEvent: " << keyCode << " (" << repeatCount << " repeats)";
+			return stringStream.str();
 		}
 
 		EVENT_CLASS_TYPE(KeyPressed)
@@ -49,7 +50,7 @@ namespace Hazel
 	{
 	public:
 
-		KeyReleasedEvent(int keyCode, int repeatCount)
+		KeyReleasedEvent(int keyCode)
 			: KeyEvent(keyCode)
 		{}
 
@@ -57,6 +58,7 @@ namespace Hazel
 		{
 			std::stringstream stringStream;
 			stringStream << "KeyReleasedEvent: " << keyCode;
+			return stringStream.str();
 		}
 
 		EVENT_CLASS_TYPE(KeyReleased)

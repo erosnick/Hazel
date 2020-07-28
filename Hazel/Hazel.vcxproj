@@ -79,7 +79,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>HazelPCH.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4251;4566;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>HAZEL_EXPORTS;HAZEL_WINDOWS_PLATFORM;HAZLE_DEBUG;HAZEL_ENABLE_ASSERTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\modules\spdlog\include;src;..\modules\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -102,7 +102,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>HazelPCH.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4251;4566;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>HAZEL_EXPORTS;HAZEL_WINDOWS_PLATFORM;HAZEL_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\modules\spdlog\include;src;..\modules\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
@@ -129,7 +129,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>HazelPCH.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4251;4566;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>HAZEL_EXPORTS;HAZEL_WINDOWS_PLATFORM;HAZEL_SHIPPING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\modules\spdlog\include;src;..\modules\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
@@ -152,6 +152,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Hazel\LayerStack.h" />
+    <ClInclude Include="src\Hazel\Layer.h" />
     <ClInclude Include="src\Hazel.h" />
     <ClInclude Include="src\Hazel\Application.h" />
     <ClInclude Include="src\Hazel\Core.h" />
@@ -166,6 +168,8 @@
     <ClInclude Include="src\Platform\Windows\Win32Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Hazel\LayerStack.cpp" />
+    <ClCompile Include="src\Hazel\Layer.cpp" />
     <ClCompile Include="src\Hazel\Application.cpp" />
     <ClCompile Include="src\Hazel\Log.cpp" />
     <ClCompile Include="src\HazelPCH.cpp">

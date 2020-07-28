@@ -60,7 +60,7 @@ namespace Hazel
 			return GetCategoryFlags() & category;
 		}
 
-	protected:
+	public:
 
 		bool handled = false;
 	};
@@ -68,7 +68,7 @@ namespace Hazel
 	class HAZEL_API EventDispatcher
 	{
 		template<typename T>
-		using EventFunction = std::function<bool>(T&);
+		using EventFunction = std::function<bool(T&)>;
 	public:
 		EventDispatcher(Event& event)
 			: event(event)
@@ -79,7 +79,7 @@ namespace Hazel
 		{
 			if (event.GetEventType() == T::GetStaticType())
 			{
-				event.handled == function(*dynamic_cast<T*>(&event));
+				event.handled = function(*dynamic_cast<T*>(&event));
 				
 				return true;
 			}

@@ -44,8 +44,7 @@ project "Hazel"
             "opengl32.lib"
         }
 
-        disablewarnings { "4251" }
-        disablewarnings { "4566" }
+        disablewarnings { "4251", "4566" }
 
         pchheader "HazelPCH.h"
         pchsource "%{prj.name}/src/HazelPCH.cpp"
@@ -104,8 +103,7 @@ project "Sandbox"
             "Hazel"
         }
 
-        disablewarnings { "4251" }
-        disablewarnings { "4566" }
+        disablewarnings { "4251", "4566" }
 
         filter "system:windows"
         cppdialect "C++17"

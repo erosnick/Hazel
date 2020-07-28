@@ -78,7 +78,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4251;4566;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>HAZEL_WINDOWS_PLATFORM;HAZLE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\modules\spdlog\include;..\Hazel\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -95,7 +95,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4251;4566;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>HAZEL_WINDOWS_PLATFORM;HAZEL_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\modules\spdlog\include;..\Hazel\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
@@ -116,7 +116,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4251;4566;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>HAZEL_WINDOWS_PLATFORM;HAZEL_SHIPPING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\modules\spdlog\include;..\Hazel\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
