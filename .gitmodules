@@ -4,3 +4,6 @@
 [submodule "modules/GLFW"]
 	path = modules/GLFW
 	url = https://github.com/erosnick/glfw.git
+[submodule "modules/imgui"]
+	path = modules/imgui
+	url = https://github.com/erosnick/imgui

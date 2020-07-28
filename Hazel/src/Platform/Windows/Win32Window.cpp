@@ -39,6 +39,16 @@ namespace Hazel
 	void Win32Window::OnUpdate()
 	{
 		glfwPollEvents();
+	}
+
+	void Win32Window::OnClear(float r, float g, float b, float a)
+	{
+		glClearColor(r, g, b, a);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+
+	void Win32Window::OnRender()
+	{
 		glfwSwapBuffers(window);
 	}
 
@@ -112,7 +122,7 @@ namespace Hazel
 			windowData->eventCallback(closeEvent);
 		});
 
-		glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mode)
+		glfwSetKeyCallback(window, [](GLFWwindow* window, int keyCode, int scancode, int action, int mode)
 		{
 			auto windowData = (WindowData*)glfwGetWindowUserPointer(window);
 
@@ -120,27 +130,35 @@ namespace Hazel
 			{
 			case GLFW_PRESS:
 			{
-				KeyPressedEvent event(key, 0);
+				KeyPressedEvent event(keyCode, 0);
 				windowData->eventCallback(event);
 				break;
 			}
 
 			case GLFW_RELEASE:
 			{
-				KeyReleasedEvent event(key);
+				KeyReleasedEvent event(keyCode);
 				windowData->eventCallback(event);
 				break;
 			}
 
 			case GLFW_REPEAT:
 			{
-				KeyPressedEvent event(key, 1);
+				KeyPressedEvent event(keyCode, 1);
 				windowData->eventCallback(event);
 				break;
 			}
 			default:
 				break;
 			}
+		});
+
+		glfwSetCharCallback(window, [](GLFWwindow* window, uint32_t keyCode)
+		{
+			auto windowData = *(WindowData*)glfwGetWindowUserPointer(window);
+
+			KeyTypedEvent event(keyCode);
+			windowData.eventCallback(event);
 		});
 	
 		glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int mods)

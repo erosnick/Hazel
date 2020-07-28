@@ -14,6 +14,8 @@ namespace Hazel
 		virtual ~Win32Window();
 
 		void OnUpdate() override;
+		void OnClear(float r, float g, float b, float a) override;
+		void OnRender() override;
 
 		inline uint32_t GetWidth() const override { return data.width; }
 		inline uint32_t GetHeight() const override { return data.height; }

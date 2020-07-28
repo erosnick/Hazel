@@ -8,13 +8,18 @@
 
 namespace Hazel
 {
-#define BIND_EVENT_FUNCTION(x) std::bind(&Application::x, this, std::placeholders::_1)
+	Application* Application::instance;
 
 	Application::Application()
 	{
-		window = std::unique_ptr<Window>(Window::Create());
+		if (instance == nullptr)
+		{
+			instance = this;
 
-		window->SetEventCallback(BIND_EVENT_FUNCTION(OnEvent));
+			window = std::unique_ptr<Window>(Window::Create());
+
+			window->SetEventCallback(HAZEL_BIND_EVENT_FUNCTION(Application::OnEvent));
+		}
 	}
 
 	Application::~Application()
@@ -26,11 +31,14 @@ namespace Hazel
 		while (running)
 		{
 			window->OnUpdate();
+			window->OnClear(0.4f, 0.6f, 0.9f, 1.0f);
 
 			for (auto layer : layerStack)
 			{
 				layer->OnUpdate();
 			}
+
+			window->OnRender();
 		}
 	}
 
@@ -41,11 +49,11 @@ namespace Hazel
 		switch (event.GetEventType())
 		{
 		case EventType::WindowClose:
-			dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(OnWindowClose));
+			dispatcher.Dispatch<WindowCloseEvent>(HAZEL_BIND_EVENT_FUNCTION(Application::OnWindowClose));
 			break;
 
 		case EventType::KeyPressed:
-			dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FUNCTION(OnMouseKeyPressed));
+			dispatcher.Dispatch<KeyPressedEvent>(HAZEL_BIND_EVENT_FUNCTION(Application::OnMouseKeyPressed));
 			break;
 
 		case EventType::WindowLostFocus:

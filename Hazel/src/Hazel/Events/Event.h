@@ -22,6 +22,7 @@ namespace Hazel
 		ApplicationRender,
 		KeyPressed,
 		KeyReleased,
+		KeyTyped,
 		MouseButtonPressed,
 		MouseButtonReleased,
 		MouseMoved,

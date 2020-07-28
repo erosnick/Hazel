@@ -19,12 +19,20 @@ namespace Hazel
 		Application();
 		virtual ~Application();
 
+		static Application& Get()
+		{
+			return *instance;
+		}
+
 		void Run();
 
 		void OnEvent(Event& event);
 
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* layer);
+
+		uint32_t GetWindowWidth() const { return window->GetWidth(); }
+		uint32_t GetWindowHeight() const { return window->GetHeight(); }
 
 	private:
 
@@ -36,6 +44,8 @@ namespace Hazel
 		std::unique_ptr<Window> window;
 		bool running = true;
 		LayerStack layerStack;
+
+		static Application* instance;
 	};
 
 	// To be defined in CLIENT

@@ -17,7 +17,6 @@ public:
 
 	void OnUpdate() override
 	{
-		HAZEL_INFO("ExampleLayer:Update");
 	}
 
 	void OnEvent(Hazel::Event& event) override
@@ -29,20 +28,20 @@ public:
 class Sandbox : public Hazel::Application
 {
 public:
-	Sandbox();
-	~Sandbox();
+	Sandbox()
+	{
+		PushLayer(new ExampleLayer());
+		PushOverlay(new Hazel::ImGuiLayer());
+	}
+
+	~Sandbox()
+	{
+
+	}
 
 private:
 
 };
-
-Sandbox::Sandbox()
-{
-}
-
-Sandbox::~Sandbox()
-{
-}
 
 Hazel::Application* Hazel::CreateApplication()
 {

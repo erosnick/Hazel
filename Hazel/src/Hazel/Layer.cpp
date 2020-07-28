@@ -14,5 +14,6 @@ namespace Hazel
 	
 	Hazel::Layer::~Layer()
 	{
+		OnDeatch();
 	}
 }
