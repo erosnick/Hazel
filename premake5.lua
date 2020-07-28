@@ -13,8 +13,10 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
 IncludeDir["GLFW"] = "modules/GLFW/include"
+IncludeDir["Glad"] = "modules/Glad/include"
 
 include "modules/GLFW"
+include "modules/Glad"
 
 project "Hazel"
         location "Hazel"
@@ -35,12 +37,14 @@ project "Hazel"
         {
             "modules/spdlog/include",
             "Hazel/src",
-            "%{IncludeDir.GLFW}"
+            "%{IncludeDir.GLFW}",
+            "%{IncludeDir.Glad}"
         }
 
         links
         {
             "GLFW",
+            "Glad",
             "opengl32.lib"
         }
 
@@ -106,9 +110,9 @@ project "Sandbox"
         disablewarnings { "4251", "4566" }
 
         filter "system:windows"
-        cppdialect "C++17"
-        staticruntime "Off"
-        systemversion "latest"
+            cppdialect "C++17"
+            staticruntime "Off"
+            systemversion "latest"
 
         defines
         {
@@ -116,8 +120,8 @@ project "Sandbox"
         }
 
         filter "configurations:Debug"
-        defines "HAZLE_DEBUG"
-        symbols "On"
+            defines "HAZLE_DEBUG"
+            symbols "On"
 
         filter "configurations:Release"
             defines "HAZEL_RELEASE"

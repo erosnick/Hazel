@@ -9,6 +9,7 @@
 #include "Hazel/Events/MouseEvent.h"
 #include "Hazel/Events/ApplicationEvent.h"
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 namespace Hazel
@@ -84,6 +85,10 @@ namespace Hazel
 		glfwMakeContextCurrent(window);
 		glfwSetWindowUserPointer(window, &data);
 		SetVSync(true);
+
+		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+
+		HAZEL_ASSERT(status, "Failed to initialize Glad!");
 
 		// Set GLFW callbacks
 		glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int width, int height)
