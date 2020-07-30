@@ -14,9 +14,6 @@ intermediate/
 *.idb
 *.pdb
 *.ipdb
-*.ilk
-*.db
-*.exp
 
 # Precompiled Headers
 *.gch
