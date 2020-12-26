@@ -119,6 +119,14 @@ namespace Hazel
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		glBegin(GL_TRIANGLES);
+		glVertex2f(-0.5f, -0.5f);
+		glVertex2f(0.0f, 0.5f);
+		glVertex2f(0.5f, -0.5f);
+		glEnd();
 	}
 
 	void ImGuiLayer::OnEvent(Event& event)
