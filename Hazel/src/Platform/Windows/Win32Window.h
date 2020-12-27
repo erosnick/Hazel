@@ -33,6 +33,9 @@ namespace Hazel
 
 		GLFWwindow* window;
 
+		uint32_t vbo[2];
+		uint32_t vao[2];
+
 		struct WindowData
 		{
 			std::string title;
