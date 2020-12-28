@@ -35,6 +35,7 @@ namespace Hazel
 
 		uint32_t vbo[2];
 		uint32_t vao[2];
+		uint32_t ibo[2];
 
 		struct WindowData
 		{

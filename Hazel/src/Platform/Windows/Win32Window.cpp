@@ -10,11 +10,56 @@
 #include "Hazel/Events/ApplicationEvent.h"
 
 #include <fstream>
+#include <map>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-std::string loadShader(const std::string& shaderFile)
+struct ShaderSource
+{
+	std::string vertexSource;
+	std::string fragmentSource;
+};
+
+static ShaderSource parseShader(const std::string& filePath)
+{
+	std::ifstream stream(filePath);
+
+	enum class ShaderType
+	{
+		None = -1,
+		Vertex = 0,
+		Fragment = 1
+	};
+
+	std::string line;
+	std::stringstream ss[2];
+
+	ShaderType shaderType = ShaderType::None;
+
+	while (getline(stream, line))
+	{
+		if (line.find("#shader") != std::string::npos)
+		{
+			if (line.find("vertex") != std::string::npos)
+			{
+				shaderType = ShaderType::Vertex;
+			}
+			else if (line.find("fragment") != std::string::npos)
+			{
+				shaderType = ShaderType::Fragment;
+			}
+		}
+		else
+		{
+			ss[static_cast<int>(shaderType)] << line << "\n";
+		}
+	}
+
+	return {ss[0].str(), ss[1].str()};
+}
+
+static std::string loadShader(const std::string& shaderFile)
 {
 	std::ifstream file(shaderFile);
 
@@ -69,8 +114,10 @@ static unsigned int CompileShader(unsigned int type, const std::string& source)
 
 static int CreateShader(const std::string& vertexShaderFile, const std::string& fragmentShaderFile)
 {
-	std::string vertexShader = loadShader(vertexShaderFile);
-	std::string fragmentShader = loadShader(fragmentShaderFile);
+	//std::string vertexShader = loadShader(vertexShaderFile);
+	//std::string fragmentShader = loadShader(fragmentShaderFile);
+
+	auto[vertexShader, fragmentShader] = parseShader("shaders/shader.glsl");
 
 	if (!(vertexShader.length() > 0 && fragmentShader.size() > 0))
 	{
@@ -130,8 +177,9 @@ namespace Hazel
 
 	void Win32Window::OnRender()
 	{
-		glBindVertexArray(vao[0]);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glBindVertexArray(vao[1]);
+		//glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
 		glfwSwapBuffers(window);
 	}
@@ -186,116 +234,128 @@ namespace Hazel
 
 		// Set GLFW callbacks
 		glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int width, int height)
-		{
-			auto windowData = (WindowData*)glfwGetWindowUserPointer(window);
+			{
+				auto windowData = (WindowData*)glfwGetWindowUserPointer(window);
 
-			windowData->width = width;
-			windowData->height = height;
+				windowData->width = width;
+				windowData->height = height;
 
-			WindowResizeEvent reszeEvent(width, height);
+				WindowResizeEvent reszeEvent(width, height);
 
-			windowData->eventCallback(reszeEvent);
-		});
+				windowData->eventCallback(reszeEvent);
+			});
 
 		glfwSetWindowCloseCallback(window, [](GLFWwindow* window)
-		{
-			auto windowData = (WindowData*)glfwGetWindowUserPointer(window);
+			{
+				auto windowData = (WindowData*)glfwGetWindowUserPointer(window);
 
-			WindowCloseEvent closeEvent;
+				WindowCloseEvent closeEvent;
 
-			windowData->eventCallback(closeEvent);
-		});
+				windowData->eventCallback(closeEvent);
+			});
 
 		glfwSetKeyCallback(window, [](GLFWwindow* window, int keyCode, int scancode, int action, int mode)
-		{
-			auto windowData = (WindowData*)glfwGetWindowUserPointer(window);
+			{
+				auto windowData = (WindowData*)glfwGetWindowUserPointer(window);
 
-			switch (action)
-			{
-			case GLFW_PRESS:
-			{
-				KeyPressedEvent event(keyCode, 0);
-				windowData->eventCallback(event);
-				break;
-			}
+				switch (action)
+				{
+				case GLFW_PRESS:
+				{
+					KeyPressedEvent event(keyCode, 0);
+					windowData->eventCallback(event);
+					break;
+				}
 
-			case GLFW_RELEASE:
-			{
-				KeyReleasedEvent event(keyCode);
-				windowData->eventCallback(event);
-				break;
-			}
+				case GLFW_RELEASE:
+				{
+					KeyReleasedEvent event(keyCode);
+					windowData->eventCallback(event);
+					break;
+				}
 
-			case GLFW_REPEAT:
-			{
-				KeyPressedEvent event(keyCode, 1);
-				windowData->eventCallback(event);
-				break;
-			}
-			default:
-				break;
-			}
-		});
+				case GLFW_REPEAT:
+				{
+					KeyPressedEvent event(keyCode, 1);
+					windowData->eventCallback(event);
+					break;
+				}
+				default:
+					break;
+				}
+			});
 
 		glfwSetCharCallback(window, [](GLFWwindow* window, uint32_t keyCode)
-		{
-			auto windowData = *(WindowData*)glfwGetWindowUserPointer(window);
+			{
+				auto windowData = *(WindowData*)glfwGetWindowUserPointer(window);
 
-			KeyTypedEvent event(keyCode);
-			windowData.eventCallback(event);
-		});
-	
+				KeyTypedEvent event(keyCode);
+				windowData.eventCallback(event);
+			});
+
 		glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int mods)
-		{
-			auto windowData = (WindowData*)glfwGetWindowUserPointer(window);
-
-			switch (action)
 			{
-			case GLFW_PRESS:
-			{
-				MouseButtonPressedEvent event(button);
-				windowData->eventCallback(event);
-				break;
-			}
+				auto windowData = (WindowData*)glfwGetWindowUserPointer(window);
 
-			case GLFW_RELEASE:
-			{
-				MouseButtonReleasedEvent event(button);
-				windowData->eventCallback(event);
-				break;
-			}
+				switch (action)
+				{
+				case GLFW_PRESS:
+				{
+					MouseButtonPressedEvent event(button);
+					windowData->eventCallback(event);
+					break;
+				}
 
-			default:
-				break;
-			}
-		});
+				case GLFW_RELEASE:
+				{
+					MouseButtonReleasedEvent event(button);
+					windowData->eventCallback(event);
+					break;
+				}
+
+				default:
+					break;
+				}
+			});
 
 		glfwSetScrollCallback(window, [](GLFWwindow* window, double offsetX, double offsetY)
-		{
-			auto windowData = (WindowData*)glfwGetWindowUserPointer(window);
+			{
+				auto windowData = (WindowData*)glfwGetWindowUserPointer(window);
 
-			MouseScrolledEvent event((float)offsetX, (float)offsetY);
-			windowData->eventCallback(event);
-		});
+				MouseScrolledEvent event((float)offsetX, (float)offsetY);
+				windowData->eventCallback(event);
+			});
 
 		glfwSetCursorPosCallback(window, [](GLFWwindow* window, double positionX, double positionY)
-		{
-			auto windowData = (WindowData*)glfwGetWindowUserPointer(window);
+			{
+				auto windowData = (WindowData*)glfwGetWindowUserPointer(window);
 
-			MouseMovedEvent event((float)positionX, (float)positionY);
-			windowData->eventCallback(event);
-		});
+				MouseMovedEvent event((float)positionX, (float)positionY);
+				windowData->eventCallback(event);
+			});
 
-		GLfloat vertices1[] = {
-			-0.5f, -0.5f, 0.0f,
-			 0.0f,  0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f
+		float vertices1[] = {
+			-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+			 0.0f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+			 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
 		};
 
-		GLfloat vertices2[] = {
-			-0.5f,  0.5f, 0.0f,
-			 0.5f,  0.5f, 0.0f,
-			 0.0f, -0.5f, 0.0f
+		float vertices2[] = {
+			-0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+			 0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+			 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+		};
+
+		float rectangle[] = {
+			-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+			 0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+		};
+
+		uint32_t indices[] = {
+			0, 1, 2,
+			0, 2, 3
 		};
 
 		glGenVertexArrays(2, vao);
@@ -303,18 +363,28 @@ namespace Hazel
 
 		glGenBuffers(2, vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), vertices1, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(rectangle), rectangle, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 3, (void*)0);
+		glGenBuffers(2, ibo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * 6, indices, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (void*)0);
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (void*)(sizeof(float) * 3));
 		glEnableVertexAttribArray(0);
-
+		glEnableVertexAttribArray(1);
 
 		glBindVertexArray(vao[1]);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(rectangle), rectangle, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 3, (void*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (void*)0);
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (void*)(sizeof(float) * 3));
 		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[1]);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * 6, indices, GL_STATIC_DRAW);
 
 		unsigned int shader = CreateShader("shaders/vertex.vs", "shaders/fragment.fs");
 		glUseProgram(shader);
