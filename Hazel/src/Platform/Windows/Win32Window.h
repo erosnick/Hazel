@@ -27,6 +27,7 @@ namespace Hazel
 
 	private:
 		virtual void Init(const WindowProps& windowProps);
+		void PreDraw();
 		virtual void Shutdown();
 
 	private:
@@ -36,6 +37,8 @@ namespace Hazel
 		uint32_t vbo[2];
 		uint32_t vao[2];
 		uint32_t ibo[2];
+
+		uint32_t shader;
 
 		struct WindowData
 		{

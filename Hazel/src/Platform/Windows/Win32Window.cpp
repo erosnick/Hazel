@@ -36,6 +36,71 @@ static bool GLLogCall(const char* function, const char* file, int line)
 	return true;
 }
 
+struct Vertex
+{
+	float x;
+	float y;
+	float z;
+	float w;
+	float r;
+	float g;
+	float b;
+	float a;
+};
+
+class Triangle
+{
+public:
+
+	Triangle()
+	{
+		vertices = {
+			Vertex{-0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f},
+			Vertex{ 0.0f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f},
+			Vertex{ 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f},
+		};
+
+		indices = {
+			0, 1, 2
+		};
+	}
+
+	void preDraw()
+	{
+		GLCall(glGenVertexArrays(1, &vao));
+		GLCall(glBindVertexArray(vao));
+
+		glGenBuffers(1, &vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		GLCall(glBufferData(GL_ARRAY_BUFFER, vertices.size(), vertices.data(), GL_STATIC_DRAW));
+
+		glGenBuffers(1, &ibo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * 3, indices.data(), GL_STATIC_DRAW);
+
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (const void*)0);
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (const void*)(sizeof(float) * 4));
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+	}
+
+	int vertexCount() const
+	{
+		return vertices.size();
+	}
+
+private:
+
+	std::vector<Vertex> vertices;
+	std::vector<uint32_t> indices;
+
+	uint32_t vao = 0;
+	uint32_t vbo = 0;
+	uint32_t ibo = 0;
+};
+
+Triangle triangle;
+
 struct ShaderSource
 {
 	std::string vertexSource;
@@ -105,7 +170,7 @@ static std::string loadShader(const std::string& shaderFile)
 	return shader;
 }
 
-static unsigned int CompileShader(unsigned int type, const std::string& source)
+static unsigned int compileShader(unsigned int type, const std::string& source)
 {
 	unsigned int id = glCreateShader(type);
 	const char* src = source.c_str();
@@ -133,7 +198,7 @@ static unsigned int CompileShader(unsigned int type, const std::string& source)
 	return id;
 }
 
-static int CreateShader(const std::string& vertexShaderFile, const std::string& fragmentShaderFile)
+static int createShader(const std::string& vertexShaderFile, const std::string& fragmentShaderFile)
 {
 	//std::string vertexShader = loadShader(vertexShaderFile);
 	//std::string fragmentShader = loadShader(fragmentShaderFile);
@@ -147,8 +212,8 @@ static int CreateShader(const std::string& vertexShaderFile, const std::string& 
 	}
 
 	GLuint program = glCreateProgram();
-	GLuint vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
-	GLuint fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
+	GLuint vs = compileShader(GL_VERTEX_SHADER, vertexShader);
+	GLuint fs = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
 	glAttachShader(program, vs);
 	glAttachShader(program, fs);
@@ -198,9 +263,12 @@ namespace Hazel
 
 	void Win32Window::OnRender()
 	{
-		glBindVertexArray(vao[1]);
+		GLCall(int location = glGetUniformLocation(shader, "color"));
+		ASSERT(location != -1);
+		GLCall(glUniform4f(location, 0.2f, 0.3f, 0.8f, 1.0f));
+
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
-		GLCall(glDrawElements(GL_TRIANGLES, 6, GL_INT, nullptr));
+		GLCall(glDrawElements(GL_TRIANGLES, triangle.vertexCount(), GL_UNSIGNED_INT, nullptr));
 
 		glfwSwapBuffers(window);
 	}
@@ -240,6 +308,10 @@ namespace Hazel
 
 			g_GLFWInitialized = true;
 		}
+
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 		window = glfwCreateWindow((int)windowProps.width, (int)data.height, data.title.c_str(), nullptr, nullptr);
 
@@ -355,6 +427,11 @@ namespace Hazel
 				windowData->eventCallback(event);
 			});
 
+		PreDraw();
+	}
+
+	void Win32Window::PreDraw()
+	{
 		float vertices1[] = {
 			-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
 			 0.0f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
@@ -379,35 +456,37 @@ namespace Hazel
 			0, 2, 3
 		};
 
-		glGenVertexArrays(2, vao);
-		glBindVertexArray(vao[0]);
+		triangle.preDraw();
 
-		glGenBuffers(2, vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(rectangle), rectangle, GL_STATIC_DRAW);
+		//glGenVertexArrays(2, vao);
+		//glBindVertexArray(vao[0]);
 
-		glGenBuffers(2, ibo);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * 6, indices, GL_STATIC_DRAW);
+		//glGenBuffers(2, vbo);
+		//glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+		//glBufferData(GL_ARRAY_BUFFER, sizeof(rectangle), rectangle, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (void*)0);
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (void*)(sizeof(float) * 3));
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
+		//glGenBuffers(2, ibo);
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
+		//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * 6, indices, GL_STATIC_DRAW);
 
-		glBindVertexArray(vao[1]);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(rectangle), rectangle, GL_STATIC_DRAW);
+		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (void*)0);
+		//glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (void*)(sizeof(float) * 3));
+		//glEnableVertexAttribArray(0);
+		//glEnableVertexAttribArray(1);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (void*)0);
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (void*)(sizeof(float) * 3));
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
+		//glBindVertexArray(vao[1]);
+		//glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+		//glBufferData(GL_ARRAY_BUFFER, sizeof(rectangle), rectangle, GL_STATIC_DRAW);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[1]);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * 6, indices, GL_STATIC_DRAW);
+		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (void*)0);
+		//glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (void*)(sizeof(float) * 3));
+		//glEnableVertexAttribArray(0);
+		//glEnableVertexAttribArray(1);
 
-		unsigned int shader = CreateShader("shaders/vertex.vs", "shaders/fragment.fs");
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[1]);
+		//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * 6, indices, GL_STATIC_DRAW);
+
+		shader = createShader("shaders/vertex.vs", "shaders/fragment.fs");
 		glUseProgram(shader);
 	}
 
