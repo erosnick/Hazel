@@ -70,6 +70,7 @@ namespace Hazel
 	{
 		template<typename T>
 		using EventFunction = std::function<bool(T&)>;
+
 	public:
 		EventDispatcher(Event& event)
 			: event(event)

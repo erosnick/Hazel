@@ -62,7 +62,7 @@ namespace Hazel
 			break;
 		}
 
-		HAZEL_CORE_TRACE("{0}", event.ToString());
+		//HAZEL_CORE_TRACE("{0}", event.ToString());
 
 		for (auto iterator = layerStack.end(); iterator != layerStack.begin();)
 		{

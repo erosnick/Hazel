@@ -15,219 +15,260 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+namespace Hazel
+{
 #define ASSERT(x) if(!(x)) __debugbreak();
 #define GLCall(x) glClearError();\
 	x;\
 ASSERT(GLLogCall(__FUNCTION__, __FILE__, __LINE__))
 
-static void glClearError()
-{
-	while (glGetError() != GL_NO_ERROR);
-}
-
-static bool GLLogCall(const char* function, const char* file, int line)
-{
-	while (GLenum error = glGetError())
+	static void glClearError()
 	{
-		HAZEL_CORE_ERROR("[OpenGL Error]({0}, {1}, {2}, line:{3})\n", error, function, file, line);
-		return false;
+		while (glGetError() != GL_NO_ERROR);
 	}
 
-	return true;
-}
-
-struct Vertex
-{
-	float x;
-	float y;
-	float z;
-	float w;
-	float r;
-	float g;
-	float b;
-	float a;
-};
-
-class Triangle
-{
-public:
-
-	Triangle()
+	static bool GLLogCall(const char* function, const char* file, int line)
 	{
-		vertices = {
-			Vertex{-0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f},
-			Vertex{ 0.0f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f},
-			Vertex{ 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f},
-		};
+		while (GLenum error = glGetError())
+		{
+			HAZEL_CORE_ERROR("[OpenGL Error]({0}, {1}, {2}, line:{3})\n", error, function, file, line);
+			return false;
+		}
 
-		indices = {
-			0, 1, 2
-		};
+		return true;
 	}
 
-	void preDraw()
+	template<typename T>
+	void initializeBuffer(int index, uint32_t target, uint32_t buffer, uint32_t bufferSize,
+		T* bufferData, uint32_t useage = GL_STATIC_DRAW)
 	{
-		GLCall(glGenVertexArrays(1, &vao));
-		GLCall(glBindVertexArray(vao));
-
-		glGenBuffers(1, &vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		GLCall(glBufferData(GL_ARRAY_BUFFER, vertices.size(), vertices.data(), GL_STATIC_DRAW));
-
-		glGenBuffers(1, &ibo);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * 3, indices.data(), GL_STATIC_DRAW);
-
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (const void*)0);
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (const void*)(sizeof(float) * 4));
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
+		glGenBuffers(1, &buffer);
+		glBindBuffer(target, buffer);
+		GLCall(glBufferData(target, bufferSize, bufferData, useage));
 	}
 
-	int vertexCount() const
+	struct Vertex
 	{
-		return vertices.size();
-	}
-
-private:
-
-	std::vector<Vertex> vertices;
-	std::vector<uint32_t> indices;
-
-	uint32_t vao = 0;
-	uint32_t vbo = 0;
-	uint32_t ibo = 0;
-};
-
-Triangle triangle;
-
-struct ShaderSource
-{
-	std::string vertexSource;
-	std::string fragmentSource;
-};
-
-static ShaderSource parseShader(const std::string& filePath)
-{
-	std::ifstream stream(filePath);
-
-	enum class ShaderType
-	{
-		None = -1,
-		Vertex = 0,
-		Fragment = 1
+		float x;
+		float y;
+		float z;
+		float r;
+		float g;
+		float b;
+		float a;
 	};
 
-	std::string line;
-	std::stringstream ss[2];
-
-	ShaderType shaderType = ShaderType::None;
-
-	while (getline(stream, line))
+	class Drawable
 	{
-		if (line.find("#shader") != std::string::npos)
+	public:
+
+		virtual void initialize()
 		{
-			if (line.find("vertex") != std::string::npos)
+			GLCall(glGenVertexArrays(1, &vao));
+			GLCall(glBindVertexArray(vao));
+
+			initializeBuffer(1, GL_ARRAY_BUFFER, vbo, sizeof(Vertex) * vertices.size(), vertices.data());
+
+			initializeBuffer(1, GL_ELEMENT_ARRAY_BUFFER, ibo, sizeof(uint32_t) * indices.size(), indices.data());
+
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (const void*)0);
+			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (const void*)(sizeof(float) * 3));
+
+			glEnableVertexAttribArray(0);
+			glEnableVertexAttribArray(1);
+		}
+
+		virtual void preDraw()
+		{
+			glBindVertexArray(vao);
+		}
+
+		int vertexCount() const
+		{
+			return vertices.size();
+		}
+
+		int IndexCount() const
+		{
+			return indices.size();
+		}
+
+	protected:
+
+		std::vector<Vertex> vertices;
+		std::vector<uint32_t> indices;
+
+		uint32_t vao = 0;
+		uint32_t vbo = 0;
+		uint32_t ibo = 0;
+	};
+
+	class Triangle : public Drawable
+	{
+	public:
+
+		Triangle()
+		{
+			vertices = {
+				Vertex{-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f},
+				Vertex{ 0.0f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f},
+				Vertex{ 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f}
+			};
+
+			indices = {
+				0, 1, 2
+			};
+		}
+	};
+
+	class Rectangle : public Drawable
+	{
+	public:
+
+		Rectangle()
+		{
+			vertices = {
+				Vertex{-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f},
+				Vertex{-0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f},
+				Vertex{ 0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f},
+				Vertex{ 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f}
+			};
+
+			indices = {
+				0, 1, 2,
+				0, 2, 3
+			};
+		}
+	};
+
+	Triangle triangle;
+	Rectangle rectangle;
+
+	struct ShaderSource
+	{
+		std::string vertexSource;
+		std::string fragmentSource;
+	};
+
+	static ShaderSource parseShader(const std::string& filePath)
+	{
+		std::ifstream stream(filePath);
+
+		enum class ShaderType
+		{
+			None = -1,
+			Vertex = 0,
+			Fragment = 1
+		};
+
+		std::string line;
+		std::stringstream ss[2];
+
+		ShaderType shaderType = ShaderType::None;
+
+		while (getline(stream, line))
+		{
+			if (line.find("#shader") != std::string::npos)
 			{
-				shaderType = ShaderType::Vertex;
+				if (line.find("vertex") != std::string::npos)
+				{
+					shaderType = ShaderType::Vertex;
+				}
+				else if (line.find("fragment") != std::string::npos)
+				{
+					shaderType = ShaderType::Fragment;
+				}
 			}
-			else if (line.find("fragment") != std::string::npos)
+			else
 			{
-				shaderType = ShaderType::Fragment;
+				ss[static_cast<int>(shaderType)] << line << "\n";
 			}
 		}
-		else
+
+		return { ss[0].str(), ss[1].str() };
+	}
+
+	static std::string loadShader(const std::string& shaderFile)
+	{
+		std::ifstream file(shaderFile);
+
+		if (file.eof())
 		{
-			ss[static_cast<int>(shaderType)] << line << "\n";
+			HAZEL_CORE_ERROR("Can not open Error: {0}", shaderFile);
+			return "";
 		}
-	}
 
-	return {ss[0].str(), ss[1].str()};
-}
-
-static std::string loadShader(const std::string& shaderFile)
-{
-	std::ifstream file(shaderFile);
-
-	if (file.eof())
-	{
-		HAZEL_CORE_ERROR("Can not open Error: {0}", shaderFile);
-		return "";
-	}
-
-	int length;
-	file.seekg(0, std::ios::end);
-	length = file.tellg();
-
-	file.seekg(0, std::ios::beg);
-	std::stringstream buffer;
-	buffer << file.rdbuf();
-	std::string shader(buffer.str());
-	//file.read(&shader[0], length);
-
-	file.close();
-
-	return shader;
-}
-
-static unsigned int compileShader(unsigned int type, const std::string& source)
-{
-	unsigned int id = glCreateShader(type);
-	const char* src = source.c_str();
-	glShaderSource(id, 1, &src, nullptr);
-	glCompileShader(id);
-
-	int result;
-	glGetShaderiv(id, GL_COMPILE_STATUS, &result);
-
-	if (result == GL_FALSE)
-	{
 		int length;
-		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-		char* message = (char*)_malloca(sizeof(char) * length);
-		glGetShaderInfoLog(id, length, &length, message);
+		file.seekg(0, std::ios::end);
+		length = file.tellg();
 
-		HAZEL_CORE_ERROR("Failed to compile {0}.", (type == GL_VERTEX_SHADER) ? "vertex shader" : "fragment shader");
-		HAZEL_CORE_ERROR("OpenGL Error: {0}", message);
+		file.seekg(0, std::ios::beg);
+		std::stringstream buffer;
+		buffer << file.rdbuf();
+		std::string shader(buffer.str());
+		//file.read(&shader[0], length);
 
-		glDeleteShader(id);
+		file.close();
 
-		return 0;
+		return shader;
 	}
 
-	return id;
-}
-
-static int createShader(const std::string& vertexShaderFile, const std::string& fragmentShaderFile)
-{
-	//std::string vertexShader = loadShader(vertexShaderFile);
-	//std::string fragmentShader = loadShader(fragmentShaderFile);
-
-	auto[vertexShader, fragmentShader] = parseShader("shaders/shader.glsl");
-
-	if (!(vertexShader.length() > 0 && fragmentShader.size() > 0))
+	static unsigned int compileShader(unsigned int type, const std::string& source)
 	{
-		HAZEL_CORE_ERROR("Wrong shader size");
-		return 0;
+		unsigned int id = glCreateShader(type);
+		const char* src = source.c_str();
+		glShaderSource(id, 1, &src, nullptr);
+		glCompileShader(id);
+
+		int result;
+		glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+
+		if (result == GL_FALSE)
+		{
+			int length;
+			glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
+			char* message = (char*)_malloca(sizeof(char) * length);
+			glGetShaderInfoLog(id, length, &length, message);
+
+			HAZEL_CORE_ERROR("Failed to compile {0}.", (type == GL_VERTEX_SHADER) ? "vertex shader" : "fragment shader");
+			HAZEL_CORE_ERROR("OpenGL Error: {0}", message);
+
+			glDeleteShader(id);
+
+			return 0;
+		}
+
+		return id;
 	}
 
-	GLuint program = glCreateProgram();
-	GLuint vs = compileShader(GL_VERTEX_SHADER, vertexShader);
-	GLuint fs = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
+	static int createShader(const std::string& vertexShaderFile, const std::string& fragmentShaderFile)
+	{
+		//std::string vertexShader = loadShader(vertexShaderFile);
+		//std::string fragmentShader = loadShader(fragmentShaderFile);
 
-	glAttachShader(program, vs);
-	glAttachShader(program, fs);
-	glLinkProgram(program);
-	glValidateProgram(program);
+		auto [vertexShader, fragmentShader] = parseShader("shaders/shader.glsl");
 
-	glDeleteShader(vs);
-	glDeleteShader(fs);
+		if (!(vertexShader.length() > 0 && fragmentShader.size() > 0))
+		{
+			HAZEL_CORE_ERROR("Wrong shader size");
+			return 0;
+		}
 
-	return 1;
-}
+		GLuint program = glCreateProgram();
+		GLuint vs = compileShader(GL_VERTEX_SHADER, vertexShader);
+		GLuint fs = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
-namespace Hazel
-{
+		glAttachShader(program, vs);
+		glAttachShader(program, fs);
+		glLinkProgram(program);
+		glValidateProgram(program);
+
+		glDeleteShader(vs);
+		glDeleteShader(fs);
+
+		return 1;
+	}
+
 	static bool g_GLFWInitialized = false;
 
 	static void GLFWErrorCallback(int error, const char* description)
@@ -265,10 +306,21 @@ namespace Hazel
 	{
 		GLCall(int location = glGetUniformLocation(shader, "color"));
 		ASSERT(location != -1);
+
 		GLCall(glUniform4f(location, 0.2f, 0.3f, 0.8f, 1.0f));
 
+		rectangle.preDraw();
+
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
-		GLCall(glDrawElements(GL_TRIANGLES, triangle.vertexCount(), GL_UNSIGNED_INT, nullptr));
+		GLCall(glDrawElements(GL_TRIANGLES, rectangle.IndexCount(), GL_UNSIGNED_INT, nullptr));
+
+		GLCall(glUniform4f(location, 1.0f, 0.0f, 0.0f, 1.0f));
+
+		triangle.preDraw();
+
+		//glDrawArrays(GL_TRIANGLES, 0, 3);
+		GLCall(glDrawElements(GL_TRIANGLES, triangle.IndexCount(), GL_UNSIGNED_INT, nullptr));
+
 
 		glfwSwapBuffers(window);
 	}
@@ -432,59 +484,8 @@ namespace Hazel
 
 	void Win32Window::PreDraw()
 	{
-		float vertices1[] = {
-			-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-			 0.0f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-			 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-		};
-
-		float vertices2[] = {
-			-0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-			 0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-			 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-		};
-
-		float rectangle[] = {
-			-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-			 0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-		};
-
-		uint32_t indices[] = {
-			0, 1, 2,
-			0, 2, 3
-		};
-
-		triangle.preDraw();
-
-		//glGenVertexArrays(2, vao);
-		//glBindVertexArray(vao[0]);
-
-		//glGenBuffers(2, vbo);
-		//glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-		//glBufferData(GL_ARRAY_BUFFER, sizeof(rectangle), rectangle, GL_STATIC_DRAW);
-
-		//glGenBuffers(2, ibo);
-		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
-		//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * 6, indices, GL_STATIC_DRAW);
-
-		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (void*)0);
-		//glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (void*)(sizeof(float) * 3));
-		//glEnableVertexAttribArray(0);
-		//glEnableVertexAttribArray(1);
-
-		//glBindVertexArray(vao[1]);
-		//glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-		//glBufferData(GL_ARRAY_BUFFER, sizeof(rectangle), rectangle, GL_STATIC_DRAW);
-
-		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (void*)0);
-		//glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (void*)(sizeof(float) * 3));
-		//glEnableVertexAttribArray(0);
-		//glEnableVertexAttribArray(1);
-
-		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[1]);
-		//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * 6, indices, GL_STATIC_DRAW);
+		triangle.initialize();
+		rectangle.initialize();
 
 		shader = createShader("shaders/vertex.vs", "shaders/fragment.fs");
 		glUseProgram(shader);
