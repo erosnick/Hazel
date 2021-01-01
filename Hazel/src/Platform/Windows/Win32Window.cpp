@@ -16,31 +16,6 @@
 
 namespace Hazel
 {
-	template<typename T>
-	void initializeBuffer(int index, uint32_t target, uint32_t buffer, uint32_t bufferSize,
-		T* bufferData, uint32_t useage = GL_STATIC_DRAW)
-	{
-		glGenBuffers(1, &buffer);
-		glBindBuffer(target, buffer);
-		GLCall(glBufferData(target, bufferSize, bufferData, useage));
-	}
-
-	class Buffer
-	{
-
-	};
-
-	struct Vertex
-	{
-		float x;
-		float y;
-		float z;
-		float r;
-		float g;
-		float b;
-		float a;
-	};
-
 	class Drawable
 	{
 	public:
@@ -50,8 +25,8 @@ namespace Hazel
 			GLCall(glGenVertexArrays(1, &vao));
 			GLCall(glBindVertexArray(vao));
 
-			vertexBuffer = {vertices.data(), static_cast<uint32_t>(sizeof(Vertex) * vertices.size())};
-			indexBuffer = {indices.data(), static_cast<uint32_t>(sizeof(uint32_t) * indices.size()), static_cast<uint32_t>(indices.size())};
+			vertexBuffer = VertexBuffer(vertices.data(), static_cast<uint32_t>(sizeof(Vertex) * vertices.size()));
+			indexBuffer = IndexBuffer(indices.data(), static_cast<uint32_t>(indices.size()));
 
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (const void*)0);
 			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (const void*)(sizeof(float) * 3));
@@ -62,7 +37,9 @@ namespace Hazel
 
 		virtual void preDraw()
 		{
-			glBindVertexArray(vao);
+			GLCall(glBindVertexArray(vao));
+			vertexBuffer.Bind();
+			indexBuffer.Bind();
 		}
 
 		int vertexCount() const

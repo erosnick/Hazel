@@ -1,25 +1,46 @@
 #include "HazelPCH.h"
 #include "VertexBuffer.h"
 #include "Renderer.h"
+#include "Hazel/Log.h"
 
-VertexBuffer::VertexBuffer(const void* data, uint32_t size)
+namespace Hazel
 {
-	GLCall(glGenBuffers(1, &rendererID));
-	GLCall(glBindBuffer(GL_ARRAY_BUFFER, rendererID));
-	GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));
-}
+	VertexBuffer::VertexBuffer()
+	{
+	}
 
-VertexBuffer::~VertexBuffer()
-{
-	GLCall(glDeleteBuffers(1, &rendererID));
-}
+	VertexBuffer::VertexBuffer(const Vertex* data, uint32_t size)
+	{
+		GLCall(glGenBuffers(1, &rendererID));
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, rendererID));
+		GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));
+	}
 
-void VertexBuffer::Bind() const
-{
-	GLCall(glBindBuffer(GL_ARRAY_BUFFER, rendererID));
-}
+	VertexBuffer::VertexBuffer(const VertexBuffer&& vertexBuffer) noexcept
+	{
+		rendererID = vertexBuffer.rendererID;
+	}
 
-void VertexBuffer::Unbind() const
-{
-	GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+	VertexBuffer& VertexBuffer::operator=(const VertexBuffer&& vertexBuffer) noexcept
+	{
+		rendererID = vertexBuffer.rendererID;
+
+		return *this;
+	}
+
+	VertexBuffer::~VertexBuffer()
+	{
+		//GLCall(glDeleteBuffers(1, &rendererID));
+	}
+
+	void VertexBuffer::Bind() const
+	{
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, rendererID));
+	}
+
+	void VertexBuffer::Unbind() const
+	{
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+	}
+
 }

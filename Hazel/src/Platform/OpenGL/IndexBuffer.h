@@ -2,21 +2,27 @@
 
 #include "Renderer.h"
 
-class IndexBuffer
+namespace Hazel
 {
-public:
+	class IndexBuffer
+	{
+	public:
 
-	IndexBuffer() {}
-	IndexBuffer(const void* data, uint32_t size, uint32_t inCount);
-	~IndexBuffer();
+		IndexBuffer() {}
+		IndexBuffer(const uint32_t* data, uint32_t inCount);
+		IndexBuffer(const IndexBuffer&& indexBuffer) noexcept;
+		IndexBuffer& operator=(const IndexBuffer& indexBuffer) noexcept;
 
-	void Bind() const;
-	void Unbind() const;
+		~IndexBuffer();
 
-	inline uint32_t Count() const { return count; }
+		void Bind() const;
+		void Unbind() const;
 
-private:
+		inline uint32_t Count() const { return count; }
 
-	uint32_t rendererID = 0;
-	uint32_t count = 0;
-};
+	private:
+
+		uint32_t rendererID = 0;
+		uint32_t count = 0;
+	};
+}

@@ -2,18 +2,26 @@
 
 #include "Renderer.h"
 
-class VertexBuffer
+namespace Hazel
 {
-public:
+	class VertexBuffer
+	{
+	public:
 
-	VertexBuffer() {}
-	VertexBuffer(const void* data, uint32_t size);
-	~VertexBuffer();
+		VertexBuffer();
+		VertexBuffer(const Vertex* data, uint32_t size);
+		VertexBuffer(const VertexBuffer&& vertexBuffer) noexcept;
 
-	void Bind() const;
-	void Unbind() const;
+		VertexBuffer& operator=(const VertexBuffer&& vertexBuffer) noexcept;
 
-private:
+		~VertexBuffer();
 
-	uint32_t rendererID = 0;
-};
+		void Bind() const;
+		void Unbind() const;
+
+	private:
+
+		uint32_t rendererID = 0;
+	};
+}
+

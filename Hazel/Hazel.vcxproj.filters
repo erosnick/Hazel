@@ -65,9 +65,9 @@
     <ClInclude Include="src\Platform\Windows\Win32Window.h">
       <Filter>Platform\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="src\Platform\OpenGL\VertexBuffer.h" />
-    <ClInclude Include="src\Platform\OpenGL\Renderer.h" />
     <ClInclude Include="src\Platform\OpenGL\IndexBuffer.h" />
+    <ClInclude Include="src\Platform\OpenGL\Renderer.h" />
+    <ClInclude Include="src\Platform\OpenGL\VertexBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Hazel\Application.cpp">
@@ -92,8 +92,8 @@
     <ClCompile Include="src\Platform\Windows\Win32Window.cpp">
       <Filter>Platform\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="src\Platform\OpenGL\VertexBuffer.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\Renderer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\IndexBuffer.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\Renderer.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\VertexBuffer.cpp" />
   </ItemGroup>
 </Project>
