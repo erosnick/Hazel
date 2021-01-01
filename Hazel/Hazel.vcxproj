@@ -167,6 +167,9 @@
     <ClInclude Include="src\Hazel\Window.h" />
     <ClInclude Include="src\HazelPCH.h" />
     <ClInclude Include="src\Platform\OpenGL\imgui_impl_opengl3.h" />
+    <ClInclude Include="src\Platform\OpenGL\IndexBuffer.h" />
+    <ClInclude Include="src\Platform\OpenGL\Renderer.h" />
+    <ClInclude Include="src\Platform\OpenGL\VertexBuffer.h" />
     <ClInclude Include="src\Platform\Windows\Win32Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -179,6 +182,9 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\IndexBuffer.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\Renderer.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\VertexBuffer.cpp" />
     <ClCompile Include="src\Platform\Windows\Win32Window.cpp" />
   </ItemGroup>
   <ItemGroup>

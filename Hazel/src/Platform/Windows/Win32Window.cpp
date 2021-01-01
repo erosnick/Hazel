@@ -8,36 +8,14 @@
 #include "Hazel/Events/KeyEvent.h"
 #include "Hazel/Events/MouseEvent.h"
 #include "Hazel/Events/ApplicationEvent.h"
+#include "Platform/OpenGL/VertexBuffer.h"
+#include "Platform/OpenGL/IndexBuffer.h"
 
 #include <fstream>
 #include <map>
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
 namespace Hazel
 {
-#define ASSERT(x) if(!(x)) __debugbreak();
-#define GLCall(x) glClearError();\
-	x;\
-ASSERT(GLLogCall(__FUNCTION__, __FILE__, __LINE__))
-
-	static void glClearError()
-	{
-		while (glGetError() != GL_NO_ERROR);
-	}
-
-	static bool GLLogCall(const char* function, const char* file, int line)
-	{
-		while (GLenum error = glGetError())
-		{
-			HAZEL_CORE_ERROR("[OpenGL Error]({0}, {1}, {2}, line:{3})\n", error, function, file, line);
-			return false;
-		}
-
-		return true;
-	}
-
 	template<typename T>
 	void initializeBuffer(int index, uint32_t target, uint32_t buffer, uint32_t bufferSize,
 		T* bufferData, uint32_t useage = GL_STATIC_DRAW)
@@ -46,6 +24,11 @@ ASSERT(GLLogCall(__FUNCTION__, __FILE__, __LINE__))
 		glBindBuffer(target, buffer);
 		GLCall(glBufferData(target, bufferSize, bufferData, useage));
 	}
+
+	class Buffer
+	{
+
+	};
 
 	struct Vertex
 	{
@@ -67,9 +50,8 @@ ASSERT(GLLogCall(__FUNCTION__, __FILE__, __LINE__))
 			GLCall(glGenVertexArrays(1, &vao));
 			GLCall(glBindVertexArray(vao));
 
-			initializeBuffer(1, GL_ARRAY_BUFFER, vbo, sizeof(Vertex) * vertices.size(), vertices.data());
-
-			initializeBuffer(1, GL_ELEMENT_ARRAY_BUFFER, ibo, sizeof(uint32_t) * indices.size(), indices.data());
+			vertexBuffer = {vertices.data(), static_cast<uint32_t>(sizeof(Vertex) * vertices.size())};
+			indexBuffer = {indices.data(), static_cast<uint32_t>(sizeof(uint32_t) * indices.size()), static_cast<uint32_t>(indices.size())};
 
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (const void*)0);
 			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (const void*)(sizeof(float) * 3));
@@ -97,6 +79,9 @@ ASSERT(GLLogCall(__FUNCTION__, __FILE__, __LINE__))
 
 		std::vector<Vertex> vertices;
 		std::vector<uint32_t> indices;
+
+		VertexBuffer vertexBuffer;
+		IndexBuffer indexBuffer;
 
 		uint32_t vao = 0;
 		uint32_t vbo = 0;
