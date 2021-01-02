@@ -10,6 +10,7 @@
 #include "Hazel/Events/ApplicationEvent.h"
 #include "Platform/OpenGL/VertexBuffer.h"
 #include "Platform/OpenGL/IndexBuffer.h"
+#include "Platform/OpenGL/VertexArray.h"
 
 #include <fstream>
 #include <map>
@@ -22,24 +23,21 @@ namespace Hazel
 
 		virtual void initialize()
 		{
-			GLCall(glGenVertexArrays(1, &vao));
-			GLCall(glBindVertexArray(vao));
+			VertexBufferLayout layout;
+			layout.Push<float>(3);
+			layout.Push<float>(4);
+
+			vertexArray.initiliaze();
 
 			vertexBuffer = VertexBuffer(vertices.data(), static_cast<uint32_t>(sizeof(Vertex) * vertices.size()));
 			indexBuffer = IndexBuffer(indices.data(), static_cast<uint32_t>(indices.size()));
 
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (const void*)0);
-			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 7, (const void*)(sizeof(float) * 3));
-
-			glEnableVertexAttribArray(0);
-			glEnableVertexAttribArray(1);
+			vertexArray.AddBuffer(vertexBuffer, layout);
 		}
 
 		virtual void preDraw()
 		{
-			GLCall(glBindVertexArray(vao));
-			vertexBuffer.Bind();
-			indexBuffer.Bind();
+			vertexArray.Bind();
 		}
 
 		int vertexCount() const
@@ -61,8 +59,7 @@ namespace Hazel
 		IndexBuffer indexBuffer;
 
 		uint32_t vao = 0;
-		uint32_t vbo = 0;
-		uint32_t ibo = 0;
+		VertexArray vertexArray;
 	};
 
 	class Triangle : public Drawable

@@ -68,6 +68,8 @@
     <ClInclude Include="src\Platform\OpenGL\IndexBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\Renderer.h" />
     <ClInclude Include="src\Platform\OpenGL\VertexBuffer.h" />
+    <ClInclude Include="src\Platform\OpenGL\VertexArray.h" />
+    <ClInclude Include="src\Platform\OpenGL\VertexBufferLayout.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Hazel\Application.cpp">
@@ -95,5 +97,6 @@
     <ClCompile Include="src\Platform\OpenGL\IndexBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\Renderer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\VertexBuffer.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\VertexArray.cpp" />
   </ItemGroup>
 </Project>
