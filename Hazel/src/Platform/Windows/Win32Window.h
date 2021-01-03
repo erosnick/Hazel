@@ -34,11 +34,7 @@ namespace Hazel
 
 		GLFWwindow* window;
 
-		uint32_t vbo[2];
-		uint32_t vao[2];
-		uint32_t ibo[2];
-
-		uint32_t shader;
+		uint32_t shaderID;
 
 		struct WindowData
 		{

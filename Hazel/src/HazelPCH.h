@@ -8,6 +8,7 @@
 
 #include <string>
 #include <sstream>
+#include <fstream>
 #include <vector>
 
 #ifdef HAZEL_PLATFORM_WINDOWS

@@ -11,6 +11,7 @@
 #include "Platform/OpenGL/VertexBuffer.h"
 #include "Platform/OpenGL/IndexBuffer.h"
 #include "Platform/OpenGL/VertexArray.h"
+#include "Platform/OpenGL/Shader.h"
 
 #include <fstream>
 #include <map>
@@ -26,7 +27,7 @@ namespace Hazel
 			VertexBufferLayout layout;
 			layout.Push<float>(3);
 			layout.Push<float>(4);
-
+			
 			vertexArray.initiliaze();
 
 			vertexBuffer = VertexBuffer(vertices.data(), static_cast<uint32_t>(sizeof(Vertex) * vertices.size()));
@@ -40,7 +41,7 @@ namespace Hazel
 			vertexArray.Bind();
 		}
 
-		int vertexCount() const
+		int VertexCount() const
 		{
 			return vertices.size();
 		}
@@ -102,14 +103,9 @@ namespace Hazel
 
 	Triangle triangle;
 	Rectangle rectangle;
+	Shader shader;
 
-	struct ShaderSource
-	{
-		std::string vertexSource;
-		std::string fragmentSource;
-	};
-
-	static ShaderSource parseShader(const std::string& filePath)
+	static ShaderSource ParseShader(const std::string& filePath)
 	{
 		std::ifstream stream(filePath);
 
@@ -147,7 +143,7 @@ namespace Hazel
 		return { ss[0].str(), ss[1].str() };
 	}
 
-	static std::string loadShader(const std::string& shaderFile)
+	static std::string LoadShader(const std::string& shaderFile)
 	{
 		std::ifstream file(shaderFile);
 
@@ -172,7 +168,7 @@ namespace Hazel
 		return shader;
 	}
 
-	static unsigned int compileShader(unsigned int type, const std::string& source)
+	static unsigned int CompileShader(unsigned int type, const std::string& source)
 	{
 		unsigned int id = glCreateShader(type);
 		const char* src = source.c_str();
@@ -200,12 +196,12 @@ namespace Hazel
 		return id;
 	}
 
-	static int createShader(const std::string& vertexShaderFile, const std::string& fragmentShaderFile)
+	static int CreateShader(const std::string& vertexShaderFile, const std::string& fragmentShaderFile)
 	{
 		//std::string vertexShader = loadShader(vertexShaderFile);
 		//std::string fragmentShader = loadShader(fragmentShaderFile);
 
-		auto [vertexShader, fragmentShader] = parseShader("shaders/shader.glsl");
+		auto [vertexShader, fragmentShader] = ParseShader("shaders/shader.glsl");
 
 		if (!(vertexShader.length() > 0 && fragmentShader.size() > 0))
 		{
@@ -214,8 +210,8 @@ namespace Hazel
 		}
 
 		GLuint program = glCreateProgram();
-		GLuint vs = compileShader(GL_VERTEX_SHADER, vertexShader);
-		GLuint fs = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
+		GLuint vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
+		GLuint fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
 		glAttachShader(program, vs);
 		glAttachShader(program, fs);
@@ -263,17 +259,14 @@ namespace Hazel
 
 	void Win32Window::OnRender()
 	{
-		GLCall(int location = glGetUniformLocation(shader, "color"));
-		ASSERT(location != -1);
-
-		GLCall(glUniform4f(location, 0.2f, 0.3f, 0.8f, 1.0f));
-
+		shader.SetUniform4f("color", 0.2f, 0.3f, 0.8f, 1.0f);
+	
 		rectangle.preDraw();
 
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
 		GLCall(glDrawElements(GL_TRIANGLES, rectangle.IndexCount(), GL_UNSIGNED_INT, nullptr));
 
-		GLCall(glUniform4f(location, 1.0f, 0.0f, 0.0f, 1.0f));
+		shader.SetUniform4f("color", 1.0f, 0.0f, 0.0f, 1.0f);
 
 		triangle.preDraw();
 
@@ -446,8 +439,10 @@ namespace Hazel
 		triangle.initialize();
 		rectangle.initialize();
 
-		shader = createShader("shaders/vertex.vs", "shaders/fragment.fs");
-		glUseProgram(shader);
+		//shaderID = CreateShader("shaders/vertex.vs", "shaders/fragment.fs");
+		//glUseProgram(shaderID);
+		shader = Shader("shaders/shader.glsl");
+		shader.Bind();
 	}
 
 	void Win32Window::Shutdown()

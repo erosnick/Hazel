@@ -25,7 +25,9 @@ namespace Hazel
 		vertexBuffer = std::move(inVertexBuffer);
 
 		const auto& elements = layout.GetElements();
+
 		uint32_t offset = 0;
+
 		for (uint32_t i = 0; i < elements.size(); i++)
 		{
 			const auto& element = elements[i];

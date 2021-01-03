@@ -169,6 +169,7 @@
     <ClInclude Include="src\Platform\OpenGL\imgui_impl_opengl3.h" />
     <ClInclude Include="src\Platform\OpenGL\IndexBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\Renderer.h" />
+    <ClInclude Include="src\Platform\OpenGL\Shader.h" />
     <ClInclude Include="src\Platform\OpenGL\VertexArray.h" />
     <ClInclude Include="src\Platform\OpenGL\VertexBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\VertexBufferLayout.h" />
@@ -186,6 +187,7 @@
     <ClCompile Include="src\Platform\OpenGL\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\Platform\OpenGL\IndexBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\Renderer.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\Shader.cpp" />
     <ClCompile Include="src\Platform\OpenGL\VertexArray.cpp" />
     <ClCompile Include="src\Platform\OpenGL\VertexBuffer.cpp" />
     <ClCompile Include="src\Platform\Windows\Win32Window.cpp" />

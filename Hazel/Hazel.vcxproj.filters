@@ -70,6 +70,7 @@
     <ClInclude Include="src\Platform\OpenGL\VertexBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\VertexArray.h" />
     <ClInclude Include="src\Platform\OpenGL\VertexBufferLayout.h" />
+    <ClInclude Include="src\Platform\OpenGL\Shader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Hazel\Application.cpp">
@@ -98,5 +99,6 @@
     <ClCompile Include="src\Platform\OpenGL\Renderer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\VertexBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\VertexArray.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\Shader.cpp" />
   </ItemGroup>
 </Project>
