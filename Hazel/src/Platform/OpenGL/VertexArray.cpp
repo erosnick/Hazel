@@ -1,6 +1,6 @@
 #include "HazelPCH.h"
-
 #include "VertexArray.h"
+#include "Utils.h"
 
 namespace Hazel
 {

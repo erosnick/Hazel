@@ -170,6 +170,7 @@
     <ClInclude Include="src\Platform\OpenGL\IndexBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\Renderer.h" />
     <ClInclude Include="src\Platform\OpenGL\Shader.h" />
+    <ClInclude Include="src\Platform\OpenGL\Utils.h" />
     <ClInclude Include="src\Platform\OpenGL\VertexArray.h" />
     <ClInclude Include="src\Platform\OpenGL\VertexBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\VertexBufferLayout.h" />

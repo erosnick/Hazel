@@ -1,7 +1,7 @@
 #include "HazelPCH.h"
 #include "VertexBuffer.h"
-#include "Renderer.h"
 #include "Hazel/Log.h"
+#include "Utils.h"
 
 namespace Hazel
 {

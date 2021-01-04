@@ -1,6 +1,6 @@
 #include "HazelPCH.h"
 #include "IndexBuffer.h"
-#include "Renderer.h"
+#include "Utils.h"
 
 namespace Hazel
 {

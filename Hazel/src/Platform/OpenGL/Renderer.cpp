@@ -4,19 +4,20 @@
 
 namespace Hazel
 {
-	void glClearError()
+	void Renderer::Clear(float r, float g, float b, float a) const
 	{
-		while (glGetError() != GL_NO_ERROR);
+		glClearColor(r, g, b, a);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	bool GLLogCall(const char* function, const char* file, int line)
+	void Renderer::Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader) const
 	{
-		while (GLenum error = glGetError())
-		{
-			HAZEL_CORE_ERROR("[OpenGL Error]({0}, {1}, {2}, line:{3})\n", error, function, file, line);
-			return false;
-		}
+		vertexArray.Bind();
+		indexBuffer.Bind();
+	}
 
-		return true;
+	void Renderer::Draw(const Drawable& drawable)
+	{
+
 	}
 }

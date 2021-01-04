@@ -33,7 +33,7 @@ namespace Hazel
 		int CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
 
 	private:
-		uint32_t rendererID;
+		uint32_t rendererID = 0;
 		std::string filePath;
 		std::unordered_map<std::string, int> uniformLocationCache;
 	};

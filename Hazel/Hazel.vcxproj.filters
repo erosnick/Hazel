@@ -71,6 +71,7 @@
     <ClInclude Include="src\Platform\OpenGL\VertexArray.h" />
     <ClInclude Include="src\Platform\OpenGL\VertexBufferLayout.h" />
     <ClInclude Include="src\Platform\OpenGL\Shader.h" />
+    <ClInclude Include="src\Platform\OpenGL\Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Hazel\Application.cpp">
