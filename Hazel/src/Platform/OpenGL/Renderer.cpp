@@ -18,6 +18,5 @@ namespace Hazel
 
 	void Renderer::Draw(const Drawable& drawable)
 	{
-
 	}
 }
