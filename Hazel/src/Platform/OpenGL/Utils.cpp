@@ -2,11 +2,6 @@
 #include "Hazel/Log.h"
 #include "Utils.h"
 
-#define ASSERT(x) if(!(x)) __debugbreak();
-#define GLCall(x) glClearError();\
-	x;\
-ASSERT(GLLogCall(__FUNCTION__, __FILE__, __LINE__))
-
 namespace Hazel
 {
 	void glClearError()

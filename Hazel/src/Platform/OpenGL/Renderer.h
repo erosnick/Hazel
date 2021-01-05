@@ -18,6 +18,7 @@ namespace Hazel
 		{
 			VertexBufferLayout layout;
 			layout.Push<float>(3);
+			layout.Push<float>(2);
 			layout.Push<float>(4);
 
 			vertexArray.initiliaze();
@@ -62,9 +63,9 @@ namespace Hazel
 		Triangle()
 		{
 			vertices = {
-				Vertex{-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f},
-				Vertex{ 0.0f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f},
-				Vertex{ 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f}
+				Vertex{-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f},
+				Vertex{ 0.0f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f},
+				Vertex{ 0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f}
 			};
 
 			indices = {
@@ -80,10 +81,10 @@ namespace Hazel
 		Rectangle()
 		{
 			vertices = {
-				Vertex{-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f},
-				Vertex{-0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f},
-				Vertex{ 0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f},
-				Vertex{ 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f}
+				Vertex{-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f},
+				Vertex{-0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f},
+				Vertex{ 0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f},
+				Vertex{ 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f}
 			};
 
 			indices = {

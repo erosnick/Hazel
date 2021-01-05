@@ -1,20 +1,29 @@
 #pragma once
-class Texture
+
+namespace Hazel
 {
-public:
+	class Texture
+	{
+	public:
 
-	Texture(std::string& path);
-	~Texture();
+		Texture();
+		~Texture();
 
-	void Bind(uint32_t slot = 0) const;
-	void Unbind() const;
+		void Load(const std::string& path);
 
-	inline uint32_t Width() const { return width; }
-	inline uint32_t Height() const { return height; }
+		void Bind(uint32_t slot = 0) const;
+		void Unbind() const;
 
-private:
+		inline uint32_t Width() const { return width; }
+		inline uint32_t Height() const { return height; }
 
-	uint32_t width;
-	uint32_t height;
-};
+	private:
 
+		uint32_t rendererID;
+		std::string path;
+		unsigned char* buffer;
+		int bpp;
+		int width;
+		int height;
+	};
+}

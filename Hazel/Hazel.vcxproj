@@ -170,7 +170,7 @@
     <ClInclude Include="src\Platform\OpenGL\IndexBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\Renderer.h" />
     <ClInclude Include="src\Platform\OpenGL\Shader.h" />
-    <ClInclude Include="src\Platform\OpenGL\stb.h" />
+    <ClInclude Include="src\Platform\OpenGL\stb_image.h" />
     <ClInclude Include="src\Platform\OpenGL\Texture.h" />
     <ClInclude Include="src\Platform\OpenGL\Utils.h" />
     <ClInclude Include="src\Platform\OpenGL\VertexArray.h" />
@@ -192,7 +192,6 @@
     <ClCompile Include="src\Platform\OpenGL\Renderer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\Shader.cpp" />
     <ClCompile Include="src\Platform\OpenGL\Utils.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\stb_image.cpp" />
     <ClCompile Include="src\Platform\OpenGL\Texture.cpp" />
     <ClCompile Include="src\Platform\OpenGL\VertexArray.cpp" />
     <ClCompile Include="src\Platform\OpenGL\VertexBuffer.cpp" />

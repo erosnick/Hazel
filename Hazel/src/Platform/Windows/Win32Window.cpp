@@ -9,6 +9,7 @@
 #include "Hazel/Events/MouseEvent.h"
 #include "Hazel/Events/ApplicationEvent.h"
 #include "Platform/OpenGL/Renderer.h"
+#include "Platform/OpenGL/Texture.h"
 #include "Platform/OpenGL/Utils.h"
 
 #include <fstream>
@@ -20,6 +21,7 @@ namespace Hazel
 	Rectangle rectangle;
 	Shader shader;
 	Renderer renderer;
+	Texture texture;
 
 	static bool g_GLFWInitialized = false;
 
@@ -55,18 +57,19 @@ namespace Hazel
 
 	void Win32Window::OnRender()
 	{
-		shader.SetUniform4f("color", 0.2f, 0.3f, 0.8f, 1.0f);
+		shader.SetUniform1i("albedo", 0);
+
+		//shader.SetUniform4f("color", 0.2f, 0.3f, 0.8f, 1.0f);
 	
 		rectangle.preDraw();
 
 		GLCall(glDrawElements(GL_TRIANGLES, rectangle.IndexCount(), GL_UNSIGNED_INT, nullptr));
 
-		shader.SetUniform4f("color", 1.0f, 0.0f, 0.0f, 1.0f);
+		//shader.SetUniform4f("color", 1.0f, 0.0f, 0.0f, 1.0f);
 
-		triangle.preDraw();
+		//triangle.preDraw();
 
-		GLCall(glDrawElements(GL_TRIANGLES, triangle.IndexCount(), GL_UNSIGNED_INT, nullptr));
-
+		//GLCall(glDrawElements(GL_TRIANGLES, triangle.IndexCount(), GL_UNSIGNED_INT, nullptr));
 
 		glfwSwapBuffers(window);
 	}
@@ -233,10 +236,16 @@ namespace Hazel
 		triangle.initialize();
 		rectangle.initialize();
 
+		texture.Load("textures/logo.png");
+		texture.Bind();
+
 		//shaderID = CreateShader("shaders/vertex.vs", "shaders/fragment.fs");
 		//glUseProgram(shaderID);
 		shader = Shader("shaders/shader.glsl");
 		shader.Bind();
+
+		GLCall(glEnable(GL_BLEND));
+		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 	}
 
 	void Win32Window::Shutdown()
