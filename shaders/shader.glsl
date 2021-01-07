@@ -31,5 +31,6 @@ uniform vec4 color;
 
 void main()
 {
-    fragmentColor = texture(albedo, outTexCoord);
+    // fragmentColor = texture(albedo, outTexCoord);
+    fragmentColor = color;
 }

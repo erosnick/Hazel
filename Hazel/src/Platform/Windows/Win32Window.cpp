@@ -59,17 +59,17 @@ namespace Hazel
 	{
 		shader.SetUniform1i("albedo", 0);
 
-		//shader.SetUniform4f("color", 0.2f, 0.3f, 0.8f, 1.0f);
+		shader.SetUniform4f("color", 0.2f, 0.3f, 0.8f, 1.0f);
 	
 		rectangle.preDraw();
 
 		GLCall(glDrawElements(GL_TRIANGLES, rectangle.IndexCount(), GL_UNSIGNED_INT, nullptr));
 
-		//shader.SetUniform4f("color", 1.0f, 0.0f, 0.0f, 1.0f);
+		shader.SetUniform4f("color", 1.0f, 0.0f, 0.0f, 0.5f);
 
-		//triangle.preDraw();
+		triangle.preDraw();
 
-		//GLCall(glDrawElements(GL_TRIANGLES, triangle.IndexCount(), GL_UNSIGNED_INT, nullptr));
+		GLCall(glDrawElements(GL_TRIANGLES, triangle.IndexCount(), GL_UNSIGNED_INT, nullptr));
 
 		glfwSwapBuffers(window);
 	}

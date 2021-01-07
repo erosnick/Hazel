@@ -20,7 +20,7 @@ namespace Hazel
 
 	Texture::~Texture()
 	{
-		GLCall(glDeleteTextures(1, &rendererID));
+		//GLCall(glDeleteTextures(1, &rendererID));
 	}
 
 	void Texture::Load(const std::string& path)
