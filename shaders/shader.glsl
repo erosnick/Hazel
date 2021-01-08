@@ -6,12 +6,14 @@ layout(location = 0) in vec4 position;
 layout(location = 1) in vec2 texCoord;
 layout(location = 2) in vec4 inColor;
 
+uniform mat4 modelViewProjection;
+
 layout(location = 0) out vec2 outTexCoord;
 layout(location = 1) out vec4 outColor;
 
 void main()
 {
-    gl_Position = vec4(position.x, position.y, position.z, 1.0f);
+    gl_Position = modelViewProjection * position;
     outTexCoord = texCoord;
     outColor = inColor;
 }

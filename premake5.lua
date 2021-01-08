@@ -15,6 +15,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "modules/GLFW/include"
 IncludeDir["Glad"] = "modules/Glad/include"
 IncludeDir["ImGui"] = "modules/imgui"
+IncludeDir["glm"] = "modules/glm"
 
 include "modules/GLFW"
 include "modules/Glad"
@@ -41,7 +42,8 @@ project "Hazel"
             "Hazel/src",
             "%{IncludeDir.GLFW}",
             "%{IncludeDir.Glad}",
-            "%{IncludeDir.ImGui}"
+            "%{IncludeDir.ImGui}",
+            "%{IncludeDir.glm}"
         }
 
         links

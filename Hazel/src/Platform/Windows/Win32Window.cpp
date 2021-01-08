@@ -12,6 +12,9 @@
 #include "Platform/OpenGL/Texture.h"
 #include "Platform/OpenGL/Utils.h"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #include <fstream>
 #include <map>
 
@@ -57,6 +60,10 @@ namespace Hazel
 
 	void Win32Window::OnRender()
 	{
+		glm::mat4 projection = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f);
+
+		shader.SetUniformMat4f("modelViewProjection", projection);
+
 		shader.SetUniform1i("albedo", 0);
 
 		shader.SetUniform4f("color", 0.2f, 0.3f, 0.8f, 1.0f);
