@@ -60,9 +60,14 @@ namespace Hazel
 
 	void Win32Window::OnRender()
 	{
-		glm::mat4 projection = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f);
+		glm::mat4 view = glm::lookAtRH(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		//glm::mat4 projection = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f);
 
-		shader.SetUniformMat4f("modelViewProjection", projection);
+		glm::mat4 projection = glm::perspectiveRH(glm::radians(45.0f), 4.0f / 3.0f, 1.0f, 1000.0f);
+
+		glm::mat4 modelViewProjection = projection * view;
+
+		shader.SetUniformMat4f("modelViewProjection", modelViewProjection);
 
 		shader.SetUniform1i("albedo", 0);
 
