@@ -28,6 +28,8 @@ namespace Hazel
 
 	static bool g_GLFWInitialized = false;
 
+	float angle = 0.0f;
+
 	static void GLFWErrorCallback(int error, const char* description)
 	{
 		HAZEL_CORE_ERROR("GLFW Error: {0} : {1}", error, description);
@@ -60,12 +62,16 @@ namespace Hazel
 
 	void Win32Window::OnRender()
 	{
+		glm::mat4 world = glm::mat4(1.0f);
+		
+		world = glm::rotate(world, glm::radians(angle++), glm::vec3(0.0f, 1.0f, 0.0f));
+
 		glm::mat4 view = glm::lookAtRH(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		//glm::mat4 projection = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f);
 
 		glm::mat4 projection = glm::perspectiveRH(glm::radians(45.0f), 4.0f / 3.0f, 1.0f, 1000.0f);
 
-		glm::mat4 modelViewProjection = projection * view;
+		glm::mat4 modelViewProjection = projection * view * world;
 
 		shader.SetUniformMat4f("modelViewProjection", modelViewProjection);
 
